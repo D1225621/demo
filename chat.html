@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>聊天</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+
+        body {
+            font-family: 'Zhi Mang Xing', cursive;
+            background: #fcfcfc;
+            color: #615a70;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 聊天欄上方線條 */
+        .header {
+            border-bottom: 3px solid #b09cb4a8;
+            padding: 1rem 1.5rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #645877;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+        /* 購物車符號手繪感簡化 */
+        .cart-icon {
+            width: 1.8rem;
+            height: 1.8rem;
+            stroke: #8b82a0;
+            stroke-width: 2.3;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .cart-icon:hover {
+            stroke: #433964;
+        }
+
+        /* 輸入區 */
+        .chat-intro {
+            background: #988da3;
+            color: white;
+            max-width: 160px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            user-select: none;
+            text-align: center;
+            margin-left: auto;
+            margin-right: 10px; /* 右側留白 */
+            margin-top: 5px;   /* 上方留白 */
+            box-shadow: 0 5px 10px rgb(123 114 134 / 0.17);
+            letter-spacing: 1px;
+        }
+
+        /* 問題區 */
+        .question-container {
+            max-width: 200px;
+            background: #b5abc0c5;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            user-select: none;
+            text-align: left;
+            margin-left: 10px;
+            margin-right: auto;
+        }
+
+        /* 按鈕風格統一 */
+        .btn-group {
+            margin: 12px auto 20px 10px;
+            display: flex;
+            justify-content: flex-start;
+            gap: 16px;
+            max-width: 320px;
+        }
+
+        .btn {
+            min-width: 64px;
+            height: 40px;
+            padding: 0 20px;
+            /* 其餘原有樣式保留 */
+            border: 1.6px solid #8f879e;
+            color: #6e647f;
+            font-weight: 700;
+            font-family: 'Zhi Mang Xing', cursive;
+            border-radius: 14px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1.1rem;
+            outline-offset: 4px;
+            box-shadow: 0 0 0 0 transparent;
+            background: #f3f1f6;
+            box-sizing: border-box;
+            line-height: 32px;
+        }
+
+        .btn:hover,
+        .btn:focus-visible {
+            border-color: #655a7a;
+            background: #d9d2e2;
+            outline-color: #655a7a;
+            outline-style: solid;
+            outline-width: 2px;
+            color: #433c50;
+        }
+
+        /* 按鍵選中狀態 */
+        .btn.selected {
+            background-color: #7e7791;
+            border-color: #584f76;
+            color: #efe9fb;
+            cursor: default;
+            box-shadow: inset 0 0 8px rgb(70 54 96 / 0.8);
+        }
+
+        /* YES */
+        .input-preview {
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: 10px;
+            text-align: right;
+            margin-bottom: 10px; /* 新增這行，調整間距 */
+        }
+
+        /* 商品滑動區 */
+        .products-container {
+            max-width: 500px;
+            margin: 0 0 24px 10px;
+            display: flex;
+            justify-content: flex-start;
+            overflow-x: auto;
+            gap: 18px;
+            padding-left: 12px;
+            -webkit-overflow-scrolling: touch;
+            scroll-padding-left: 12px;
+        }
+
+        /* 單個商品框 */
+        .product-card {
+            flex: 0 0 160px;
+            background: #b5abc099;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 8px 18px 8px;
+            user-select: none;
+            box-shadow: 0 3px 8px rgb(113 99 128 / 0.15);
+            position: relative;
+            cursor: pointer;
+            transition: box-shadow 0.25s ease;
+            min-height: 260px;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 6px 14px rgb(112 86 172 / 0.32);
+        }
+
+        .product-image {
+            background: #cac3d3;
+            border-radius: 8px;
+            width: 130px;
+            height: 130px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 18px;
+            user-select: none;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px #8f879e55;
+        }
+
+        .product-image img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+            filter: grayscale(20%) contrast(0.7);
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .product-info {
+            width: 100%;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 700;
+            padding: 0 12px;
+            letter-spacing: 1px;
+            color: #5d4f72;
+            display: flex;
+            justify-content: space-between;
+            opacity: 0.9;
+            user-select: none;
+        }
+
+        .product-info span {
+            font-weight: 500;
+            font-family: 'Zhi Mang Xing', cursive;
+            font-size: 0.78rem;
+        }
+
+        .product-detail-button {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: #7a718a;
+            cursor: pointer;
+            user-select: none;
+            user-drag: none;
+            border: 1.4px solid #7a718a;
+            border-radius: 16px;
+            min-width: 48px;
+            width: auto;
+            height: 24px;
+            line-height: 18px;
+            text-align: center;
+            padding: 2px 10px;
+            background-color: #cbc1d2a8;
+            filter: drop-shadow(0 0 1px #7a718a88);
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+
+        .product-detail-button:hover {
+            background-color: #a29ed1b2;
+            border-color: #655a7a;
+            filter: drop-shadow(0 0 2px #7a718a99);
+        }
+
+        /* 下方提示文字 */
+        .products-desc {
+            max-width: 320px;
+            margin: 8px 0 48px 10px;
+            font-size: 1.1rem;
+            user-select: none;
+            font-weight: 400;
+            padding: 0 16px; /* 左右內距加大 */
+            letter-spacing: 0.8px;
+            background: #b5abc0b8;
+            border-radius: 8px;
+            text-align: left;
+            line-height: 1.4;
+            color: #696077;
+            box-shadow: 0 3px 7px rgb(144 123 162 / 0.35);
+        }
+
+        /* 底部輸入區 */
+        .chat-input-wrapper {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90vw;
+            max-width: 700px;
+            background: #b2a8b7aa;
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            padding: 0.3rem 0.5rem 0.3rem 0.6rem;
+            box-shadow: 0 0 6px 1px #9c91a9cc;
+        }
+
+        .attach-btn {
+            border: 2px solid #7f7188;
+            border-radius: 50%;
+            width: 2.7rem;
+            height: 2.7rem;
+            color: #665a70;
+            font-weight: 900;
+            font-size: 1.6rem;
+            line-height: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            padding-bottom: 2px;
+            margin-right: 0.7rem;
+        }
+        .attach-btn:hover {
+            background-color: #7f7188;
+            color: #e8dff5;
+        }
+
+        input.chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #594d6a;
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.7rem;
+            outline: none;
+            caret-color: #b09cb4a8;
+            padding: 0.3rem 0.5rem;
+        }
+        input::placeholder {
+            color: #b09cb4a8;
+            font-size: 1.3rem;
+        }
+
+        .send-btn {
+            cursor: pointer;
+            margin-left: 0.7rem;
+            width: 2.8rem;
+            height: 2.8rem;
+            border: none;
+            background: transparent;
+            stroke-width: 2.5;
+            stroke: #7f7190;
+            user-select: none;
+            transition: stroke 0.3s ease;
+        }
+        .send-btn:hover {
+            stroke: #433964;
+        }
+
+        .send-btn:active {
+            stroke: #2a1e4a;
+        }
+
+        /* 預防手機鍵盤遮擋輸入欄 */
+        @media (max-width: 480px) {
+            .chat-input-wrapper {
+                bottom: env(safe-area-inset-bottom, 1rem);
+            }
+        }
+
+        /* scroll bar style for products container */
+        .products-container::-webkit-scrollbar {
+            height: 14px;
+        }
+
+        .products-container::-webkit-scrollbar-thumb {
+            background: #7e769ba1;
+            border-radius: 7px;
+            border: 3.5px solid #f3f1f6cc;
+        }
+
+        .products-container::-webkit-scrollbar-track {
+            background: transparent;
+            margin: 6px 0;
+        }
+    </style>
+</head>
+
+<body>
+<header class="header" aria-label="網站頂部標題及購物車">
+    <div>szmz</div>
+    <svg class="cart-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" role="img" focusable="false">
+        <circle cx="9" cy="21" r="1" />
+        <circle cx="20" cy="21" r="1" />
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+    </svg>
+</header>
+
+<main>
+    <div class="chat-intro" aria-live="polite" aria-atomic="true" aria-relevant="text">
+        我要洗髮精
+    </div>
+
+    <section class="question-container" aria-label="問題">
+        <p>您的頭髮容易出油嗎？</p>
+    </section>
+
+    <section class="btn-group" role="group" aria-label="選擇頭髮是否容易出油">
+        <button class="btn" type="button" aria-pressed="false">Yes</button>
+        <button class="btn" type="button" aria-pressed="false">No</button>
+        <button class="btn" type="button" aria-pressed="false">IDK</button>
+    </section>
+
+    <div class="input-preview">
+        <span style="background:#988da3;color:#fff;padding:6px 18px;border-radius:12px 16px 16px 16px;display:inline-block;font-size:1.2rem;box-shadow:0 3px 8px #7b728622;">Yes</span>
+    </div>
+
+
+    <section class="products-container" aria-label="產品推薦區" tabindex="0">
+        <article class="product-card" role="group" aria-labelledby="product1name1 product1price1">
+            <div class="product-image" aria-hidden="true">
+                <img src="/image/hair2.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+            </div>
+            <div class="product-info">
+                <span id="product1name1">綠茶柚子清爽保濕洗髮露</span>
+                <span id="product1price1">$299</span>
+                <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+            </div>
+        </article>
+
+        <article class="product-card" role="group" aria-labelledby="product1name2 product1price2">
+            <div class="product-image" aria-hidden="true">
+                <img src="/image/hair1.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+            </div>
+            <div class="product-info">
+                <span id="product1name2">金萱控油養護洗髮精</span>
+                <span id="product1price2">$144</span>
+                <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+            </div>
+        </article>
+        <article class="product-card" role="group" aria-labelledby="product1name3 product1price3">
+            <div class="product-image" aria-hidden="true">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f899af2d-73cf-40fa-b0b5-a93ec8c78e42.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+            </div>
+            <div class="product-info">
+                <span id="product1name3">NAME</span>
+                <span id="product1price3">$200</span>
+                <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+            </div>
+        </article>
+        <article class="product-card" role="group" aria-labelledby="product1name4 product1price4">
+            <div class="product-image" aria-hidden="true">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f899af2d-73cf-40fa-b0b5-a93ec8c78e42.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+            </div>
+            <div class="product-info">
+                <span id="product1name4">NAME</span>
+                <span id="product1price4">$200</span>
+                <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+            </div>
+        </article>
+    </section>
+
+    <div class="products-desc" aria-live="polite">
+        以上是油性髮質適用的產品，還有其他需求嗎？
+    </div>
+
+    <form class="chat-input-wrapper" role="search" onsubmit="sendMessage(event)" aria-label="輸入訊息並發送">
+        <button type="button" class="attach-btn" aria-label="附加檔案或圖片" title="附加檔案">＋</button>
+        <input
+                type="text"
+                class="chat-input"
+                placeholder="請輸入訊息..."
+                aria-describedby="send-desc"
+                id="chatInput"
+                autocomplete="off"
+                spellcheck="false"
+                inputmode="text"
+                maxlength="100"
+                required
+        />
+        <button type="submit" class="send-btn" aria-label="發送訊息" title="發送">
+            <svg viewBox="0 0 28 24" fill=#665a70 stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="22 12 10 22 10 2 22 12"></polygon> <!-- 箭頭 -->
+            </svg>
+        </button>
+    </form>
+</main>
+
+<script>
+    // Handle button group selection toggling and ARIA states
+    const buttons = document.querySelectorAll('.btn-group .btn');
+    buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            buttons.forEach(b => {
+                b.classList.remove('selected');
+                b.setAttribute('aria-pressed', 'false');
+            });
+            btn.classList.add('selected');
+            btn.setAttribute('aria-pressed', 'true');
+        });
+    });
+
+    // Product detail button placeholder interaction
+    const detailButtons = document.querySelectorAll('.product-detail-button');
+    detailButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            alert('查看詳細資訊功能尚未實作');
+        });
+    });
+
+    // Chat input form submission placeholder
+    function submitInput(event) {
+        event.preventDefault();
+        const input = event.target.querySelector('.chat-input');
+        if (input.value.trim() !== '') {
+            alert('您輸入的訊息: ' + input.value.trim());
+            input.value = '';
+        }
+    }
+</script>
+</body>
+
+</html>
+
