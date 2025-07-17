@@ -80,7 +80,7 @@
 
     /* 單個商品框 */
     .product-card {
-      flex: 0 0 160px;
+      flex: 0 0 190px;
       background: #b5abc099;
       border-radius: 12px;
       display: flex;
@@ -102,7 +102,7 @@
     .product-image {
       background: #cac3d3;
       border-radius: 8px;
-      width: 130px;
+      width: 140px;
       height: 130px;
       display: flex;
       justify-content: center;
@@ -142,6 +142,31 @@
       font-size: 0.78rem;
     }
 
+    .add-cart-button {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: #7a718a;
+      cursor: pointer;
+      user-select: none;
+      border: 1.4px solid #7a718a;
+      border-radius: 16px;
+      min-width: 80px;
+      height: 24px;
+      line-height: 18px;
+      text-align: center;
+      padding: 2px 10px;
+      background-color: #e2d8e6a8;
+      filter: drop-shadow(0 0 1px #7a718a88);
+      transition: background 0.2s, border 0.2s;
+    }
+    .add-cart-button:hover {
+      background-color: #b7b0d1b2;
+      border-color: #655a7a;
+    }
+
     .product-detail-button {
       font-size: 0.85rem;
       font-weight: 400;
@@ -157,7 +182,7 @@
       line-height: 18px;
       text-align: center;
       padding: 2px 10px;
-      background-color: #cbc1d2a8;
+      background-color: #e2d8e6a8;
       filter: drop-shadow(0 0 1px #7a718a88);
       position: absolute;
       right: 10px;
@@ -296,6 +321,7 @@
     <div class="product-info">
       <span id="product1name1">綠茶柚子清爽保濕洗髮露</span>
       <span id="product1price1">$299</span>
+      <button class="add-cart-button" aria-label="加入購物車">🛒 加入</button>
       <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
     </div>
   </article>
@@ -307,6 +333,7 @@
     <div class="product-info">
       <span id="product1name2">生薑清茶防斷豐盈洗髮露</span>
       <span id="product1price2">$399</span>
+      <button class="add-cart-button" aria-label="加入購物車">🛒 加入</button>
       <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
     </div>
   </article>
@@ -317,6 +344,7 @@
     <div class="product-info">
       <span id="product1name3">髮根強健洗髮精</span>
       <span id="product1price3">$200</span>
+      <button class="add-cart-button" aria-label="加入購物車">🛒 加入</button>
       <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
     </div>
   </article>
@@ -327,6 +355,7 @@
     <div class="product-info">
       <span id="product1name4">NAME</span>
       <span id="product1price4">$200</span>
+      <button class="add-cart-button" aria-label="加入購物車">🛒 加入</button>
       <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
     </div>
   </article>
