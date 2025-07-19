@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>商品詳細資料</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', '微軟正黑體', Arial, sans-serif;
+            background: #f7f3fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .header {
+            border-bottom: 3px solid #b09cb4a8;
+            padding: 1rem 1.5rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #645877;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+        /* 購物車符號手繪感簡化 */
+        .cart-icon {
+            width: 1.8rem;
+            height: 1.8rem;
+            stroke: #8b82a0;
+            stroke-width: 2.3;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .cart-icon:hover {
+            stroke: #433964;
+        }
+
+        .product-detail {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px #b2a8b755;
+            max-width: 400px;
+            width: 100%;
+            margin: 0 auto; /* 增加上方間距 */
+            padding: 2rem 2.5rem 2.5rem;
+            text-align: center;
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .product-detail {
+                margin: 3.5rem auto 0 auto; /* 小螢幕也有間距 */
+                width: 96vw;
+                max-width: 360px;
+                padding: 1.2rem 0.5rem 2rem;
+            }
+        }
+
+        .product-img {
+            width: 220px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px #b2a8b733;
+            margin: 0 auto 1.5rem;
+            display: block;
+        }
+
+
+
+        .product-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #6d5a7b;
+            margin-bottom: 0.7rem;
+        }
+        .product-price {
+            font-size: 1.5rem;
+            color: #a07fc7;
+            margin-bottom: 1.2rem;
+        }
+        .product-desc {
+            font-size: 1.1rem;
+            color: #6a5d7b;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+        .buy-btn {
+            background: linear-gradient(90deg, #a07fc7 60%, #e8dff5 100%);
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            padding: 0.8rem 2.5rem;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #b2a8b733;
+            transition: background 0.2s;
+        }
+        .buy-btn:hover {
+            background: linear-gradient(90deg, #7f7190 60%, #b2a8b7 100%);
+        }
+    </style>
+</head>
+<body>
+<header class="header fixed top-0 left-0 right-0 bg-white z-10" aria-label="網站頂部標題及購物車">
+    <button onclick="history.back()" class="text-[#8b82a0] hover:text-[#433964] text-xl font-bold mr-2">
+        ← 返回
+    </button>
+    <div class="flex-1 text-center">szmz</div>
+    <svg class="cart-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" role="img" focusable="false">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    </svg>
+</header>
+
+<div class="product-detail">
+    <img src="image/hair4.png" alt="商品圖片" class="product-img" />
+    <div class="product-title">頭皮護理洗髮精</div>
+    <div class="product-price">NT$ 200</div>
+    <div class="product-desc">
+        柔順的紫色捲髮，展現獨特個性與時尚感。適合各種場合，輕鬆打造迷人造型。<br><br>
+        <b>成分：</b>水、界面活性劑、矽靈、酸鹼調節劑、保濕劑、增稠劑、香精和防腐劑<br>
+        <b>用法：</b>將頭髮打濕，取適量並搓揉起泡，並沖洗乾淨。<br>
+        <b>保存期限：</b>3年
+    </div>
+    <button class="buy-btn">立即購買</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>聊天</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+
+    body {
+      font-family: 'Zhi Mang Xing', cursive;
+      background: #fcfcfc;
+      color: #615a70;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* 聊天欄上方線條 */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 3px solid #b09cb4a8;
+      padding: 1rem 1.5rem;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #645877;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      background: #fcfcfc; /* 建議加上背景色避免透明 */
+    }
+    /* 購物車符號手繪感簡化 */
+    .cart-icon {
+      width: 1.8rem;
+      height: 1.8rem;
+      stroke: #8b82a0;
+      stroke-width: 2.3;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .cart-icon:hover {
+      stroke: #433964;
+    }
+
+    /* 輸入區 */
+    .chat-intro {
+      background: #988da3;
+      color: white;
+      max-width: 160px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      user-select: none;
+      text-align: center;
+      margin-left: auto;
+      margin-right: 10px; /* 右側留白 */
+      margin-top: 5px;   /* 上方留白 */
+      box-shadow: 0 5px 10px rgb(123 114 134 / 0.17);
+      letter-spacing: 1px;
+    }
+
+    .chat-intro2 {
+      background: #988da3;
+      color: white;
+      max-width: 160px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      user-select: none;
+      text-align: center;
+      margin-left: auto;
+      margin-right: 10px; /* 右側留白 */
+      box-shadow: 0 5px 10px rgb(123 114 134 / 0.17);
+      letter-spacing: 1px;
+    }
+
+    /* 問題區 */
+    .question-container1 {
+      max-width: 200px;
+      background: #b5abc0c5;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      user-select: none;
+      text-align: left;
+      margin-left: 10px;
+      margin-right: auto;
+    }
+    .question-container2 {
+      max-width: 200px;
+      background: #b5abc0c5;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      user-select: none;
+      text-align: left;
+      margin-left: 10px;
+      margin-right: auto;
+    }
+
+    /* 按鈕風格統一 */
+    .btn-group {
+      margin: 12px auto 20px 10px;
+      display: flex;
+      justify-content: flex-start;
+      gap: 16px;
+      max-width: 320px;
+    }
+
+    .btn {
+      min-width: 64px;
+      height: 40px;
+      padding: 0 20px;
+      /* 其餘原有樣式保留 */
+      border: 1.6px solid #8f879e;
+      color: #6e647f;
+      font-weight: 700;
+      font-family: 'Zhi Mang Xing', cursive;
+      border-radius: 14px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.3s ease;
+      text-align: center;
+      font-size: 1.1rem;
+      outline-offset: 4px;
+      box-shadow: 0 0 0 0 transparent;
+      background: #f3f1f6;
+      box-sizing: border-box;
+      line-height: 32px;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      border-color: #655a7a;
+      background: #d9d2e2;
+      outline-color: #655a7a;
+      outline-style: solid;
+      outline-width: 2px;
+      color: #433c50;
+    }
+
+    /* 按鍵選中狀態 */
+    .btn.selected {
+      background-color: #7e7791;
+      border-color: #584f76;
+      color: #efe9fb;
+      cursor: default;
+      box-shadow: inset 0 0 8px rgb(70 54 96 / 0.8);
+    }
+
+    /* YES/NO */
+    .input-preview {
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: 10px;
+      text-align: right;
+      margin-bottom: 10px; /* 新增這行，調整間距 */
+    }
+
+    .product-tabs {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding: 8px 0 12px 10px;
+      margin-bottom: 6px;
+      max-width: 500px;
+      -webkit-overflow-scrolling: touch;
+      scroll-padding-left: 10px;
+    }
+    .tab-btn {
+      min-width: 80px;
+      padding: 6px 18px;
+      border: 1.5px solid #8f879e;
+      border-radius: 16px;
+      background: #f3f1f6;
+      color: #6e647f;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+      outline: none;
+    }
+    .tab-btn.selected,
+    .tab-btn:focus-visible {
+      background: #7e7791;
+      color: #fff;
+      border-color: #584f76;
+    }
+    .tab-btn:not(.selected):hover {
+      background: #d9d2e2;
+      color: #433c50;
+    }
+
+    /* 商品滑動區 */
+    .products-container,.products-container2,.products-container3,.products-container4 {
+      max-width: 500px;
+      margin: 0 0 24px 10px;
+      display: flex;
+      justify-content: flex-start;
+      overflow-x: auto;
+      gap: 18px;
+      padding-left: 12px;
+      -webkit-overflow-scrolling: touch;
+      scroll-padding-left: 12px;
+    }
+
+    /* 單個商品框 */
+    .product-card {
+      flex: 0 0 190px;
+      background: #b5abc099;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 8px 18px 8px;
+      user-select: none;
+      box-shadow: 0 3px 8px rgb(113 99 128 / 0.15);
+      position: relative;
+      cursor: pointer;
+      transition: box-shadow 0.25s ease;
+      min-height: 260px;
+    }
+
+    .product-card:hover {
+      box-shadow: 0 6px 14px rgb(112 86 172 / 0.32);
+    }
+
+    .product-image {
+      background: #cac3d3;
+      border-radius: 8px;
+      width: 140px;
+      height: 130px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 18px;
+      user-select: none;
+      overflow: hidden;
+      box-shadow: inset 0 0 10px #8f879e55;
+    }
+
+    .product-image img {
+      max-width: 80%;
+      max-height: 80%;
+      object-fit: contain;
+      filter: grayscale(20%) contrast(0.7);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .product-info {
+      width: 100%;
+      text-align: left;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 0 12px;
+      letter-spacing: 1px;
+      color: #5d4f72;
+      display: flex;
+      justify-content: space-between;
+      opacity: 0.9;
+      user-select: none;
+    }
+
+    .product-info span {
+      font-weight: 500;
+      font-family: 'Zhi Mang Xing', cursive;
+      font-size: 0.78rem;
+    }
+
+    .add-cart-button {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: #7a718a;
+      cursor: pointer;
+      user-select: none;
+      border: 1.4px solid #7a718a;
+      border-radius: 16px;
+      min-width: 60px;
+      height: 24px;
+      line-height: 18px;
+      text-align: center;
+      padding: 2px 10px;
+      background-color: #e2d8e6a8;
+      filter: drop-shadow(0 0 1px #7a718a88);
+      transition: background 0.2s, border 0.2s;
+    }
+    .add-cart-button:hover {
+      background-color: #b7b0d1b2;
+      border-color: #655a7a;
+    }
+
+    .product-detail-button {
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: #7a718a;
+      cursor: pointer;
+      user-select: none;
+      border: 1.4px solid #7a718a;
+      border-radius: 16px;
+      min-width: 48px;
+      width: auto;
+      height: 24px;
+      line-height: 18px;
+      text-align: center;
+      padding: 2px 10px;
+      background-color: #e2d8e6a8;
+      filter: drop-shadow(0 0 1px #7a718a88);
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+    }
+
+    .product-detail-button:hover {
+      background-color: #a29ed1b2;
+      border-color: #655a7a;
+      filter: drop-shadow(0 0 2px #7a718a99);
+    }
+
+    /* 下方提示文字 */
+    .products-desc {
+      max-width: 320px;
+      margin: 8px 0 10px 10px;
+      font-size: 1.1rem;
+      user-select: none;
+      font-weight: 400;
+      padding: 0 16px; /* 左右內距加大 */
+      letter-spacing: 0.8px;
+      background: #b5abc0b8;
+      border-radius: 8px;
+      text-align: left;
+      line-height: 1.4;
+      color: #696077;
+      box-shadow: 0 3px 7px rgb(144 123 162 / 0.35);
+    }
+
+    .products-desc2 {
+      max-width: 320px;
+      margin: 8px 0 25px 10px;
+      font-size: 1.1rem;
+      user-select: none;
+      font-weight: 400;
+      padding: 0 16px; /* 左右內距加大 */
+      letter-spacing: 0.8px;
+      background: #b5abc0b8;
+      border-radius: 8px;
+      text-align: left;
+      line-height: 1.4;
+      color: #696077;
+      box-shadow: 0 3px 7px rgb(144 123 162 / 0.35);
+    }
+
+    /* 底部輸入區 */
+    .chat-input-wrapper {
+      position: sticky;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-3%);
+      width: 90vw;
+      max-width: 700px;
+      background: #b2a8b7aa;
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      padding: 0.3rem 0.5rem 0.3rem 0.6rem;
+      box-shadow: 0 0 6px 1px #9c91a9cc;
+      margin-top: auto;
+    }
+
+    .attach-btn {
+      border: 2px solid #7f7188;
+      border-radius: 50%;
+      width: 2.7rem;
+      height: 2.7rem;
+      color: #665a70;
+      font-weight: 900;
+      font-size: 1.6rem;
+      line-height: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      padding-bottom: 2px;
+      margin-right: 0.7rem;
+    }
+    .attach-btn:hover {
+      background-color: #7f7188;
+      color: #e8dff5;
+    }
+
+    input.chat-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #594d6a;
+      font-family: 'Indie Flower', cursive;
+      font-size: 1.7rem;
+      outline: none;
+      caret-color: #b09cb4a8;
+      padding: 0.3rem 0.5rem;
+    }
+    input::placeholder {
+      color: #b09cb4a8;
+      font-size: 1.3rem;
+    }
+
+    .send-btn {
+      cursor: pointer;
+      margin-left: 0.7rem;
+      width: 2.8rem;
+      height: 2.8rem;
+      border: none;
+      background: transparent;
+      stroke-width: 2.5;
+      stroke: #7f7190;
+      user-select: none;
+      transition: stroke 0.3s ease;
+    }
+    .send-btn:hover {
+      stroke: #433964;
+    }
+
+    .send-btn:active {
+      stroke: #2a1e4a;
+    }
+
+    /* 預防手機鍵盤遮擋輸入欄 */
+    @media (max-width: 480px) {
+      .chat-input-wrapper {
+        bottom: env(safe-area-inset-bottom, 1rem);
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+<header class="header" aria-label="網站頂部標題及購物車">
+  <div>szmz</div>
+  <svg class="cart-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" role="img" focusable="false">
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+  </svg>
+</header>
+
+<main>
+  <div class="chat-intro" aria-live="polite" aria-atomic="true" aria-relevant="text">
+    想要保養頭髮
+  </div>
+
+  <section class="question-container1" aria-label="問題">
+    <p>頭皮容易出油嗎？</p>
+  </section>
+
+  <div class="input-preview">
+    <span style="background:#988da3;color:#fff;padding:6px 18px;border-radius:12px 16px 16px 16px;display:inline-block;font-size:1.2rem;box-shadow:0 3px 8px #7b728622;">Yes</span>
+  </div>
+
+  <section class="question-container1" aria-label="問題">
+    <p>您有染過頭髮嗎？</p>
+  </section>
+
+  <div class="input-preview">
+    <span style="background:#988da3;color:#fff;padding:6px 18px;border-radius:12px 16px 16px 16px;display:inline-block;font-size:1.2rem;box-shadow:0 3px 8px #7b728622;">No</span>
+  </div>
+
+  <section class="question-container1" aria-label="問題">
+    <p>您有燙過頭髮嗎？</p>
+  </section>
+
+  <div class="input-preview">
+    <span style="background:#988da3;color:#fff;padding:6px 18px;border-radius:12px 16px 16px 16px;display:inline-block;font-size:1.2rem;box-shadow:0 3px 8px #7b728622;">No</span>
+  </div>
+
+  <section class="question-container1" aria-label="問題">
+    <p>您是否有頭皮屑？</p>
+  </section>
+
+  <div class="input-preview">
+    <span style="background:#988da3;color:#fff;padding:6px 18px;border-radius:12px 16px 16px 16px;display:inline-block;font-size:1.2rem;box-shadow:0 3px 8px #7b728622;">Yes</span>
+  </div>
+
+  <section class="question-container2" aria-label="問題">
+    <p>您是否容易掉頭髮？</p>
+  </section>
+
+  <div class="input-preview">
+    <span style="background:#988da3;color:#fff;padding:6px 18px;border-radius:12px 16px 16px 16px;display:inline-block;font-size:1.2rem;box-shadow:0 3px 8px #7b728622;">Yes</span>
+  </div>
+
+  <div class="product-tabs" role="tablist" aria-label="商品分類">
+    <button class="tab-btn selected" role="tab" aria-selected="true" tabindex="0">洗髮精</button>
+    <button class="tab-btn" role="tab" aria-selected="false" tabindex="-1">護髮素</button>
+    <button class="tab-btn" role="tab" aria-selected="false" tabindex="-1">髮油</button>
+  </div>
+
+  <section class="products-container" aria-label="產品推薦區" tabindex="0">
+    <article class="product-card" role="group" aria-labelledby="product1name1 product1price1">
+      <div class="product-image" aria-hidden="true">
+        <img src="/image/hair6.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+      </div>
+      <div class="product-info">
+        <span id="product1name1">綠茶柚子清爽保濕洗髮露</span>
+        <span id="product1price1">$299</span>
+        <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+        <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+      </div>
+    </article>
+
+    <article class="product-card" role="group" aria-labelledby="product1name2 product1price2">
+      <div class="product-image" aria-hidden="true">
+        <img src="/image/hair5.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+      </div>
+      <div class="product-info">
+        <span id="product1name2">金萱控油養護洗髮精</span>
+        <span id="product1price2">$144</span>
+        <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+        <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+      </div>
+    </article>
+    <article class="product-card" role="group" aria-labelledby="product1name3 product1price3">
+      <div class="product-image" aria-hidden="true">
+        <img src="/image/hair4.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+      </div>
+      <div class="product-info">
+        <span id="product1name3">頭皮護理洗髮精</span>
+        <span id="product1price3">$200</span>
+        <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+        <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+      </div>
+    </article>
+    <article class="product-card" role="group" aria-labelledby="product1name4 product1price4">
+      <div class="product-image" aria-hidden="true">
+        <img src="/image/hair1.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+      </div>
+      <div class="product-info">
+        <span id="product1name4">NAME</span>
+        <span id="product1price4">$200</span>
+        <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+        <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+      </div>
+    </article>
+  </section>
+
+  <section class="products-container2" aria-label="產品推薦區" tabindex="0">
+    <article class="product-card" role="group" aria-labelledby="product1name1 product1price1">
+      <div class="product-image" aria-hidden="true">
+        <img src="/image/hair4.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+      </div>
+      <div class="product-info">
+        <span id="product1name1">綠茶柚子清爽保濕洗髮露</span>
+        <span id="product1price1">$299</span>
+        <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+        <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+      </div>
+    </article>
+
+    <article class="product-card" role="group" aria-labelledby="product1name2 product1price2">
+      <div class="product-image" aria-hidden="true">
+        <img src="/image/hair2.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+      </div>
+      <div class="product-info">
+        <span id="product1name2">金萱控油養護洗髮精</span>
+        <span id="product1price2">$144</span>
+        <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+        <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+      </div>
+    </article>
+    <article class="product-card" role="group" aria-labelledby="product1name3 product1price3">
+      <div class="product-image" aria-hidden="true">
+        <img src="/image/hair5.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+      </div>
+      <div class="product-info">
+        <span id="product1name3">頭皮護理洗髮精</span>
+        <span id="product1price3">$200</span>
+        <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+        <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+      </div>
+    </article>
+    <article class="product-card" role="group" aria-labelledby="product1name4 product1price4">
+      <div class="product-image" aria-hidden="true">
+        <img src="/image/hair1.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+      </div>
+      <div class="product-info">
+        <span id="product1name4">NAME</span>
+        <span id="product1price4">$200</span>
+        <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+        <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+      </div>
+    </article>
+  </section>
+
+  <section class="products-container3" aria-label="產品推薦區" tabindex="0">
+    <article class="product-card" role="group" aria-labelledby="product1name1 product1price1">
+      <div class="product-image" aria-hidden="true">
+        <img src="/image/hair4.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+      </div>
+      <div class="product-info">
+        <span id="product1name1">綠茶柚子清爽保濕洗髮露</span>
+        <span id="product1price1">$299</span>
+        <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+        <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+      </div>
+    </article>
+
+    <article class="product-card" role="group" aria-labelledby="product1name2 product1price2">
+      <div class="product-image" aria-hidden="true">
+        <img src="/image/hair2.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+      </div>
+      <div class="product-info">
+        <span id="product1name2">金萱控油養護洗髮精</span>
+        <span id="product1price2">$144</span>
+        <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+        <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+      </div>
+    </article>
+    <article class="product-card" role="group" aria-labelledby="product1name3 product1price3">
+      <div class="product-image" aria-hidden="true">
+        <img src="/image/hair5.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+      </div>
+      <div class="product-info">
+        <span id="product1name3">頭皮護理洗髮精</span>
+        <span id="product1price3">$200</span>
+        <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+        <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+      </div>
+    </article>
+    <article class="product-card" role="group" aria-labelledby="product1name4 product1price4">
+      <div class="product-image" aria-hidden="true">
+        <img src="/image/hair1.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+      </div>
+      <div class="product-info">
+        <span id="product1name4">NAME</span>
+        <span id="product1price4">$200</span>
+        <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+        <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+      </div>
+    </article>
+  </section>
+
+  <div class="products-desc" aria-live="polite">
+    以上是為您客製化推薦的一系列產品，有需要更進一步的幫助嗎？
+  </div>
+
+  <div class="chat-intro2" aria-live="polite" aria-atomic="true" aria-relevant="text">
+    想要使用方法
+  </div>
+
+  <div class="products-desc2" aria-live="polite">
+    保養方法：<br>
+    1.洗髮前先梳髮<br>
+    2.使用適量洗髮精，輕柔按摩頭皮<br>
+    3.沖洗乾淨後，使用護髮素<br>
+    4.沖洗後輕輕拍乾頭髮<br>
+    5.使用髮油或護髮精華，均勻塗抹於髮尾<br>
+  </div>
+
+  <form class="chat-input-wrapper" role="search" onsubmit="sendMessage(event)" aria-label="輸入訊息並發送">
+    <button type="button" class="attach-btn" aria-label="附加檔案或圖片" title="附加檔案">＋</button>
+    <input
+            type="text"
+            class="chat-input"
+            placeholder="請輸入訊息..."
+            aria-describedby="send-desc"
+            id="chatInput"
+            autocomplete="off"
+            spellcheck="false"
+            inputmode="text"
+            maxlength="100"
+            required
+    />
+    <button type="submit" class="send-btn" aria-label="發送訊息" title="發送">
+      <svg viewBox="0 0 28 24" fill=#665a70 stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="22 12 10 22 10 2 22 12"></polygon> <!-- 箭頭 -->
+      </svg>
+    </button>
+  </form>
+</main>
+
+<script>
+  // 先取得所有 tab 按鈕和產品區
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const products1 = document.querySelector('.products-container');
+  const products2 = document.querySelector('.products-container2');
+  const products3 = document.querySelector('.products-container3');
+
+  tabBtns.forEach((btn, idx) => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => {
+        b.classList.remove('selected');
+        b.setAttribute('aria-selected', 'false');
+        b.tabIndex = -1;
+      });
+      btn.classList.add('selected');
+      btn.setAttribute('aria-selected', 'true');
+      btn.tabIndex = 0;
+
+      // 根據索引切換顯示的產品區
+      if (idx === 0) {
+        products1.style.display = '';
+        products2.style.display = 'none';
+        products3.style.display = 'none';
+        products4.style.display = 'none';
+      } else if (idx === 1) {
+        products1.style.display = 'none';
+        products2.style.display = '';
+        products3.style.display = 'none';
+        products4.style.display = 'none';
+      }
+      else if (idx === 2) {
+        products1.style.display = 'none';
+        products2.style.display = 'none';
+        products3.style.display = '';
+        products4.style.display = 'none';
+      } else {
+        products1.style.display = 'none';
+        products2.style.display = 'none';
+        products3.style.display = 'none';
+        products4.style.display = 'none';
+      }
+    });
+  });
+
+  // 預設只顯示第一個產品區
+  products1.style.display = '';
+  products2.style.display = 'none';
+  products3.style.display = 'none';
+
+  // Handle button group selection toggling and ARIA states
+  const buttons = document.querySelectorAll('.btn-group .btn');
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => {
+        b.classList.remove('selected');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('selected');
+      btn.setAttribute('aria-pressed', 'true');
+    });
+  });
+
+  // Product detail button placeholder interaction
+  const detailButtons = document.querySelectorAll('.product-detail-button');
+  detailButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      alert('查看詳細資訊功能尚未實作');
+    });
+  });
+
+  // Chat input form submission placeholder
+  function submitInput(event) {
+    event.preventDefault();
+    const input = event.target.querySelector('.chat-input');
+    if (input.value.trim() !== '') {
+      alert('您輸入的訊息: ' + input.value.trim());
+      input.value = '';
+    }
+  }
+</script>
+</body>
+
+</html>
+

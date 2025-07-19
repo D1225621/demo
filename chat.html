@@ -18,6 +18,9 @@
 
         /* 聊天欄上方線條 */
         .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
             border-bottom: 3px solid #b09cb4a8;
             padding: 1rem 1.5rem;
             font-weight: 700;
@@ -27,6 +30,7 @@
             justify-content: space-between;
             align-items: center;
             user-select: none;
+            background: #fcfcfc; /* 建議加上背景色避免透明 */
         }
         /* 購物車符號手繪感簡化 */
         .cart-icon {
@@ -60,7 +64,19 @@
         }
 
         /* 問題區 */
-        .question-container {
+        .question-container1 {
+            max-width: 200px;
+            background: #b5abc0c5;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            user-select: none;
+            text-align: left;
+            margin-left: 10px;
+            margin-right: auto;
+        }
+        .question-container2 {
             max-width: 200px;
             background: #b5abc0c5;
             border-radius: 8px;
@@ -123,7 +139,7 @@
             box-shadow: inset 0 0 8px rgb(70 54 96 / 0.8);
         }
 
-        /* YES */
+        /* YES/NO */
         .input-preview {
             max-width: 600px;
             margin-left: auto;
@@ -132,8 +148,43 @@
             margin-bottom: 10px; /* 新增這行，調整間距 */
         }
 
+        .product-tabs {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 8px 0 12px 10px;
+            margin-bottom: 6px;
+            max-width: 500px;
+            -webkit-overflow-scrolling: touch;
+            scroll-padding-left: 10px;
+        }
+        .tab-btn {
+            min-width: 80px;
+            padding: 6px 18px;
+            border: 1.5px solid #8f879e;
+            border-radius: 16px;
+            background: #f3f1f6;
+            color: #6e647f;
+            font-weight: 700;
+            font-size: 1.05rem;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+            outline: none;
+        }
+        .tab-btn.selected,
+        .tab-btn:focus-visible {
+            background: #7e7791;
+            color: #fff;
+            border-color: #584f76;
+        }
+        .tab-btn:not(.selected):hover {
+            background: #d9d2e2;
+            color: #433c50;
+        }
+
         /* 商品滑動區 */
-        .products-container {
+        .products-container,.products-container2,.products-container3,.products-container4 {
             max-width: 500px;
             margin: 0 0 24px 10px;
             display: flex;
@@ -220,7 +271,7 @@
             user-select: none;
             border: 1.4px solid #7a718a;
             border-radius: 16px;
-            min-width: 80px;
+            min-width: 60px;
             height: 24px;
             line-height: 18px;
             text-align: center;
@@ -240,7 +291,6 @@
             color: #7a718a;
             cursor: pointer;
             user-select: none;
-            user-drag: none;
             border: 1.4px solid #7a718a;
             border-radius: 16px;
             min-width: 48px;
@@ -281,10 +331,10 @@
 
         /* 底部輸入區 */
         .chat-input-wrapper {
-            position: fixed;
+            position: sticky;
             bottom: 1rem;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-3%);
             width: 90vw;
             max-width: 700px;
             background: #b2a8b7aa;
@@ -294,6 +344,7 @@
             align-items: center;
             padding: 0.3rem 0.5rem 0.3rem 0.6rem;
             box-shadow: 0 0 6px 1px #9c91a9cc;
+            margin-top: auto;
         }
 
         .attach-btn {
@@ -368,31 +419,60 @@
 <header class="header" aria-label="網站頂部標題及購物車">
     <div>szmz</div>
     <svg class="cart-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" role="img" focusable="false">
-        <circle cx="9" cy="21" r="1" />
-        <circle cx="20" cy="21" r="1" />
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
     </svg>
 </header>
 
 <main>
     <div class="chat-intro" aria-live="polite" aria-atomic="true" aria-relevant="text">
-        我要洗髮精
+        想要保養頭髮
     </div>
 
-    <section class="question-container" aria-label="問題">
-        <p>您的頭髮容易出油嗎？</p>
-    </section>
-
-    <section class="btn-group" role="group" aria-label="選擇頭髮是否容易出油">
-        <button class="btn" type="button" aria-pressed="false">Yes</button>
-        <button class="btn" type="button" aria-pressed="false">No</button>
-        <button class="btn" type="button" aria-pressed="false">IDK</button>
+    <section class="question-container1" aria-label="問題">
+        <p>頭皮容易出油嗎？</p>
     </section>
 
     <div class="input-preview">
         <span style="background:#988da3;color:#fff;padding:6px 18px;border-radius:12px 16px 16px 16px;display:inline-block;font-size:1.2rem;box-shadow:0 3px 8px #7b728622;">Yes</span>
     </div>
 
+    <section class="question-container1" aria-label="問題">
+        <p>您有染過頭髮嗎？</p>
+    </section>
+
+    <div class="input-preview">
+        <span style="background:#988da3;color:#fff;padding:6px 18px;border-radius:12px 16px 16px 16px;display:inline-block;font-size:1.2rem;box-shadow:0 3px 8px #7b728622;">No</span>
+    </div>
+
+    <section class="question-container1" aria-label="問題">
+        <p>您有燙過頭髮嗎？</p>
+    </section>
+
+    <div class="input-preview">
+        <span style="background:#988da3;color:#fff;padding:6px 18px;border-radius:12px 16px 16px 16px;display:inline-block;font-size:1.2rem;box-shadow:0 3px 8px #7b728622;">No</span>
+    </div>
+
+    <section class="question-container1" aria-label="問題">
+        <p>您是否有頭皮屑？</p>
+    </section>
+
+    <div class="input-preview">
+        <span style="background:#988da3;color:#fff;padding:6px 18px;border-radius:12px 16px 16px 16px;display:inline-block;font-size:1.2rem;box-shadow:0 3px 8px #7b728622;">Yes</span>
+    </div>
+
+    <section class="question-container2" aria-label="問題">
+        <p>您是否容易掉頭髮？</p>
+    </section>
+
+    <div class="input-preview">
+        <span style="background:#988da3;color:#fff;padding:6px 18px;border-radius:12px 16px 16px 16px;display:inline-block;font-size:1.2rem;box-shadow:0 3px 8px #7b728622;">Yes</span>
+    </div>
+
+    <div class="product-tabs" role="tablist" aria-label="商品分類">
+        <button class="tab-btn selected" role="tab" aria-selected="true" tabindex="0">洗髮精</button>
+        <button class="tab-btn" role="tab" aria-selected="false" tabindex="-1">護髮素</button>
+        <button class="tab-btn" role="tab" aria-selected="false" tabindex="-1">髮油</button>
+    </div>
 
     <section class="products-container" aria-label="產品推薦區" tabindex="0">
         <article class="product-card" role="group" aria-labelledby="product1name1 product1price1">
@@ -402,7 +482,7 @@
             <div class="product-info">
                 <span id="product1name1">綠茶柚子清爽保濕洗髮露</span>
                 <span id="product1price1">$299</span>
-                <button class="add-cart-button" aria-label="加入購物車">🛒 加入</button>
+                <button class="add-cart-button" aria-label="加入購物車">收藏</button>
                 <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
             </div>
         </article>
@@ -414,7 +494,7 @@
             <div class="product-info">
                 <span id="product1name2">金萱控油養護洗髮精</span>
                 <span id="product1price2">$144</span>
-                <button class="add-cart-button" aria-label="加入購物車">🛒 加入</button>
+                <button class="add-cart-button" aria-label="加入購物車">收藏</button>
                 <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
             </div>
         </article>
@@ -425,7 +505,7 @@
             <div class="product-info">
                 <span id="product1name3">頭皮護理洗髮精</span>
                 <span id="product1price3">$200</span>
-                <button class="add-cart-button" aria-label="加入購物車">🛒 加入</button>
+                <button class="add-cart-button" aria-label="加入購物車">收藏</button>
                 <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
             </div>
         </article>
@@ -436,14 +516,110 @@
             <div class="product-info">
                 <span id="product1name4">NAME</span>
                 <span id="product1price4">$200</span>
-                <button class="add-cart-button" aria-label="加入購物車">🛒 加入</button>
+                <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+                <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+            </div>
+        </article>
+    </section>
+
+    <section class="products-container2" aria-label="產品推薦區" tabindex="0">
+        <article class="product-card" role="group" aria-labelledby="product1name1 product1price1">
+            <div class="product-image" aria-hidden="true">
+                <img src="/image/hair4.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+            </div>
+            <div class="product-info">
+                <span id="product1name1">綠茶柚子清爽保濕洗髮露</span>
+                <span id="product1price1">$299</span>
+                <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+                <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+            </div>
+        </article>
+
+        <article class="product-card" role="group" aria-labelledby="product1name2 product1price2">
+            <div class="product-image" aria-hidden="true">
+                <img src="/image/hair2.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+            </div>
+            <div class="product-info">
+                <span id="product1name2">金萱控油養護洗髮精</span>
+                <span id="product1price2">$144</span>
+                <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+                <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+            </div>
+        </article>
+        <article class="product-card" role="group" aria-labelledby="product1name3 product1price3">
+            <div class="product-image" aria-hidden="true">
+                <img src="/image/hair5.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+            </div>
+            <div class="product-info">
+                <span id="product1name3">頭皮護理洗髮精</span>
+                <span id="product1price3">$200</span>
+                <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+                <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+            </div>
+        </article>
+        <article class="product-card" role="group" aria-labelledby="product1name4 product1price4">
+            <div class="product-image" aria-hidden="true">
+                <img src="/image/hair1.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+            </div>
+            <div class="product-info">
+                <span id="product1name4">NAME</span>
+                <span id="product1price4">$200</span>
+                <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+                <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+            </div>
+        </article>
+    </section>
+
+    <section class="products-container3" aria-label="產品推薦區" tabindex="0">
+        <article class="product-card" role="group" aria-labelledby="product1name1 product1price1">
+            <div class="product-image" aria-hidden="true">
+                <img src="/image/hair4.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+            </div>
+            <div class="product-info">
+                <span id="product1name1">綠茶柚子清爽保濕洗髮露</span>
+                <span id="product1price1">$299</span>
+                <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+                <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+            </div>
+        </article>
+
+        <article class="product-card" role="group" aria-labelledby="product1name2 product1price2">
+            <div class="product-image" aria-hidden="true">
+                <img src="/image/hair2.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+            </div>
+            <div class="product-info">
+                <span id="product1name2">金萱控油養護洗髮精</span>
+                <span id="product1price2">$144</span>
+                <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+                <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+            </div>
+        </article>
+        <article class="product-card" role="group" aria-labelledby="product1name3 product1price3">
+            <div class="product-image" aria-hidden="true">
+                <img src="/image/hair5.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+            </div>
+            <div class="product-info">
+                <span id="product1name3">頭皮護理洗髮精</span>
+                <span id="product1price3">$200</span>
+                <button class="add-cart-button" aria-label="加入購物車">收藏</button>
+                <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
+            </div>
+        </article>
+        <article class="product-card" role="group" aria-labelledby="product1name4 product1price4">
+            <div class="product-image" aria-hidden="true">
+                <img src="/image/hair1.png" alt="髮品瓶子，圓形瓶身帶有壓頭泵，個性化手繪風" onerror="this.style.display='none'" />
+            </div>
+            <div class="product-info">
+                <span id="product1name4">NAME</span>
+                <span id="product1price4">$200</span>
+                <button class="add-cart-button" aria-label="加入購物車">收藏</button>
                 <button class="product-detail-button" aria-label="查看詳細資訊">＋ 詳細</button>
             </div>
         </article>
     </section>
 
     <div class="products-desc" aria-live="polite">
-        以上是油性髮質適用的產品，還有其他需求嗎？
+        以上是為您客製化推薦的一系列產品，有需要更進一步的幫助嗎？
     </div>
 
     <form class="chat-input-wrapper" role="search" onsubmit="sendMessage(event)" aria-label="輸入訊息並發送">
@@ -469,6 +645,54 @@
 </main>
 
 <script>
+    // 先取得所有 tab 按鈕和產品區
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const products1 = document.querySelector('.products-container');
+    const products2 = document.querySelector('.products-container2');
+    const products3 = document.querySelector('.products-container3');
+
+    tabBtns.forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => {
+                b.classList.remove('selected');
+                b.setAttribute('aria-selected', 'false');
+                b.tabIndex = -1;
+            });
+            btn.classList.add('selected');
+            btn.setAttribute('aria-selected', 'true');
+            btn.tabIndex = 0;
+
+            // 根據索引切換顯示的產品區
+            if (idx === 0) {
+                products1.style.display = '';
+                products2.style.display = 'none';
+                products3.style.display = 'none';
+                products4.style.display = 'none';
+            } else if (idx === 1) {
+                products1.style.display = 'none';
+                products2.style.display = '';
+                products3.style.display = 'none';
+                products4.style.display = 'none';
+            }
+            else if (idx === 2) {
+                products1.style.display = 'none';
+                products2.style.display = 'none';
+                products3.style.display = '';
+                products4.style.display = 'none';
+            } else {
+                products1.style.display = 'none';
+                products2.style.display = 'none';
+                products3.style.display = 'none';
+                products4.style.display = 'none';
+            }
+        });
+    });
+
+    // 預設只顯示第一個產品區
+    products1.style.display = '';
+    products2.style.display = 'none';
+    products3.style.display = 'none';
+
     // Handle button group selection toggling and ARIA states
     const buttons = document.querySelectorAll('.btn-group .btn');
     buttons.forEach((btn) => {

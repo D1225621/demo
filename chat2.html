@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>聊天</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+
+        body {
+            font-family: 'Zhi Mang Xing', cursive;
+            background: #fcfcfc;
+            color: #615a70;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 聊天欄上方線條 */
+        .header {
+            border-bottom: 3px solid #b09cb4a8;
+            padding: 1rem 1.5rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #645877;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+        /* 購物車符號手繪感簡化 */
+        .cart-icon {
+            width: 1.8rem;
+            height: 1.8rem;
+            stroke: #8b82a0;
+            stroke-width: 2.3;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .cart-icon:hover {
+            stroke: #433964;
+        }
+
+        /* 輸入區 */
+        .chat-intro {
+            background: #988da3;
+            color: white;
+            max-width: 160px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            user-select: none;
+            text-align: center;
+            margin-left: auto;
+            margin-right: 10px; /* 右側留白 */
+            margin-top: 5px;   /* 上方留白 */
+            box-shadow: 0 5px 10px rgb(123 114 134 / 0.17);
+            letter-spacing: 1px;
+        }
+
+        .product-image img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+            filter: grayscale(20%) contrast(0.7);
+            user-select: none;
+            pointer-events: none;
+        }
+
+
+        .product-info span {
+            font-weight: 500;
+            font-family: 'Zhi Mang Xing', cursive;
+            font-size: 0.78rem;
+        }
+
+
+        /* 底部輸入區 */
+        .chat-input-wrapper {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90vw;
+            max-width: 700px;
+            background: #b2a8b7aa;
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            padding: 0.3rem 0.5rem 0.3rem 0.6rem;
+            box-shadow: 0 0 6px 1px #9c91a9cc;
+        }
+
+        .attach-btn {
+            border: 2px solid #7f7188;
+            border-radius: 50%;
+            width: 2.7rem;
+            height: 2.7rem;
+            color: #665a70;
+            font-weight: 900;
+            font-size: 1.6rem;
+            line-height: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            padding-bottom: 2px;
+            margin-right: 0.7rem;
+        }
+        .attach-btn:hover {
+            background-color: #7f7188;
+            color: #e8dff5;
+        }
+
+        input.chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #594d6a;
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.7rem;
+            outline: none;
+            caret-color: #b09cb4a8;
+            padding: 0.3rem 0.5rem;
+        }
+        input::placeholder {
+            color: #b09cb4a8;
+            font-size: 1.3rem;
+        }
+
+        .send-btn {
+            cursor: pointer;
+            margin-left: 0.7rem;
+            width: 2.8rem;
+            height: 2.8rem;
+            border: none;
+            background: transparent;
+            stroke-width: 2.5;
+            stroke: #7f7190;
+            user-select: none;
+            transition: stroke 0.3s ease;
+        }
+        .send-btn:hover {
+            stroke: #433964;
+        }
+
+        .send-btn:active {
+            stroke: #2a1e4a;
+        }
+
+        /* 預防手機鍵盤遮擋輸入欄 */
+        @media (max-width: 480px) {
+            .chat-input-wrapper {
+                bottom: env(safe-area-inset-bottom, 1rem);
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+<header class="header" aria-label="網站頂部標題及購物車">
+    <div>szmz</div>
+    <svg class="cart-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" role="img" focusable="false">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    </svg>
+
+</header>
+
+<main>
+    <div class="chat-intro" aria-live="polite" aria-atomic="true" aria-relevant="text">
+        想要保養頭髮
+    </div>
+
+    <form class="chat-input-wrapper" role="search" onsubmit="sendMessage(event)" aria-label="輸入訊息並發送">
+        <button type="button" class="attach-btn" aria-label="附加檔案或圖片" title="附加檔案">＋</button>
+        <input
+                type="text"
+                class="chat-input"
+                placeholder="請輸入訊息..."
+                aria-describedby="send-desc"
+                id="chatInput"
+                autocomplete="off"
+                spellcheck="false"
+                inputmode="text"
+                maxlength="100"
+                required
+        />
+        <button type="submit" class="send-btn" aria-label="發送訊息" title="發送">
+            <svg viewBox="0 0 28 24" fill=#665a70 stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="22 12 10 22 10 2 22 12"></polygon> <!-- 箭頭 -->
+            </svg>
+        </button>
+    </form>
+</main>
+
+<script>
+    // Handle button group selection toggling and ARIA states
+    const buttons = document.querySelectorAll('.btn-group .btn');
+    buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            buttons.forEach(b => {
+                b.classList.remove('selected');
+                b.setAttribute('aria-pressed', 'false');
+            });
+            btn.classList.add('selected');
+            btn.setAttribute('aria-pressed', 'true');
+        });
+    });
+
+    // Product detail button placeholder interaction
+    const detailButtons = document.querySelectorAll('.product-detail-button');
+    detailButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            alert('查看詳細資訊功能尚未實作');
+        });
+    });
+
+    // Chat input form submission placeholder
+    function submitInput(event) {
+        event.preventDefault();
+        const input = event.target.querySelector('.chat-input');
+        if (input.value.trim() !== '') {
+            alert('您輸入的訊息: ' + input.value.trim());
+            input.value = '';
+        }
+    }
+</script>
+</body>
+
+</html>
+
